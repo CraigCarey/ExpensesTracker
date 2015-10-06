@@ -1,0 +1,11 @@
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\ExpenseTracker.Repository.dll
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\ExpenseTracker.Repository.pdb
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\EntityFramework.dll
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\EntityFramework.SqlServer.dll
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\ExpenseTracker.DTO.dll
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\ExpenseTracker.DTO.pdb
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\EntityFramework.xml
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\bin\Debug\EntityFramework.SqlServer.xml
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\obj\Debug\ExpenseTracker.Repository.csprojResolveAssemblyReference.cache
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\obj\Debug\ExpenseTracker.Repository.dll
+C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.Repository\obj\Debug\ExpenseTracker.Repository.pdb
