@@ -3,6 +3,7 @@ using ExpenseTracker.Repository.Factories;
 using System;
 using System.Linq;
 using System.Web.Http;
+using Marvin.JsonPatch;
 
 namespace ExpenseTracker.API.Controllers
 {
@@ -127,6 +128,47 @@ namespace ExpenseTracker.API.Controllers
             {
                 
                 throw;
+            }
+        }
+
+        [HttpPatch]
+        public IHttpActionResult Patch(int id, [FromBody]JsonPatchDocument<DTO.ExpenseGroup> expenseGroupPatchDocument)
+        {
+            try
+            {
+                if (expenseGroupPatchDocument == null)
+                {
+                    return BadRequest();
+                }
+
+                // first need to get ExpenseGroup that we want to update
+                var expenseGroup = _repository.GetExpenseGroup(id);
+                if (expenseGroup == null)
+                {
+                    return NotFound();
+                }
+
+                // map
+                var eg = _expenseGroupFactory.CreateExpenseGroup(expenseGroup);
+
+                // apply changes to the DTO
+                expenseGroupPatchDocument.ApplyTo(eg);
+
+                // map the DTO with applied changes to the entity, & update
+                var result = _repository.UpdateExpenseGroup(_expenseGroupFactory.CreateExpenseGroup(eg));
+
+                if (result.Status == RepositoryActionStatus.Updated)
+                {
+                    // map to DTO
+                    var patchedExpenseGroup = _expenseGroupFactory.CreateExpenseGroup(result.Entity);
+                    return Ok(patchedExpenseGroup);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
         }
     }

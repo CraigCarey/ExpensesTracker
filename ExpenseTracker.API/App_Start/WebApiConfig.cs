@@ -26,7 +26,10 @@ namespace ExpenseTracker.API
 
             // forces JSON format returns by removing XML
             config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
-            
+
+            // add PATCH functionality, allows for both types of patch doc
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json-patch+json"));
+
             // format returned JSON
             config.Formatters.JsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
