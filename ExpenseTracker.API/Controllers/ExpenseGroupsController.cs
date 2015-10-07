@@ -6,6 +6,8 @@ using System.Web.Http;
 using Marvin.JsonPatch;
 using System.Net;
 using ExpenseTracker.API.Helpers;
+using System.Web.Http.Routing;
+using System.Web;
 
 namespace ExpenseTracker.API.Controllers
 {
@@ -15,6 +17,8 @@ namespace ExpenseTracker.API.Controllers
         // ExpenseTrackerEFRepository implements IExpenseTrackerRepository
         IExpenseTrackerRepository _repository;
         ExpenseGroupFactory _expenseGroupFactory = new ExpenseGroupFactory();
+
+        const int maxPageSize = 10;
 
         public ExpenseGroupsController()
         {
@@ -26,9 +30,10 @@ namespace ExpenseTracker.API.Controllers
             _repository = repository;
         }    
 
-        // retrieve a sorted list of resources
+        // retrieve a sorted & paged list of resources
         // parameters passed as query strings
-        public IHttpActionResult Get(string sort = "id", string status = null, string userId = null)
+        [Route("api/expensegroups", Name = "ExpenseGroupsList")]
+        public IHttpActionResult Get(string sort = "id", string status = null, string userId = null, int page = 1, int pageSize = maxPageSize)
         {
             try
             {
@@ -48,16 +53,66 @@ namespace ExpenseTracker.API.Controllers
                     }
                 }
 
-                var expenseGroups = _repository.GetExpenseGroups();
+                var expenseGroups = _repository.GetExpenseGroups()
+                                    .ApplySort(sort)
+                                    // only return ExpenseGroups that conform to the statuscode & userId passed in
+                                    .Where(eg => (statusId == -1 || eg.ExpenseGroupStatusId == statusId))
+                                    .Where(eg => (userId == null || eg.UserId == userId));
+
+                // restrict pageSize
+                if (pageSize > maxPageSize)
+                {
+                    pageSize = maxPageSize;
+                }
+
+                // calculate data for metadata
+                var totalCount = expenseGroups.Count();
+                var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                // creates new links from current route
+                var urlHelper = new UrlHelper(Request);
+                var prevLink = page > 1 ? urlHelper.Link("ExpenseGroupsList",
+                    new
+                    {
+                        page = page - 1,
+                        pageSize = pageSize,
+                        sort = sort,
+                        status = status,
+                        userId = userId
+                    }) : "";
+
+                var nextLink = page < totalPages ? urlHelper.Link("ExpenseGroupsList",
+                    new
+                    {
+                        page = page + 1,
+                        pageSize = pageSize,
+                        sort = sort,
+                        status = status,
+                        userId = userId
+                    }) : "";
+
+                // Anonymous type, provides a convenient way to encapsulate a set of read-only properties into a single object
+                // without having to explicitly define a type first
+                var paginationHeader = new
+                {
+                    currentPage = page,
+                    pageSize = pageSize,
+                    totalCount = totalCount,
+                    totalPages = totalPages,
+                    previousPageLink = prevLink,
+                    nextPageLink = nextLink
+                };
+
+                // Add the paginationHeader to the current response headers
+                HttpContext.Current.Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationHeader));
 
                 // return statuscode 200 containing the list of ExpenseGroups, mapped using the factory to their DTO models
-                return Ok(expenseGroups
-                            .ApplySort(sort)
-                            // only return ExpenseGroups that conform to the statuscode & userId passed in
-                            .Where(eg => (statusId == -1 || eg.ExpenseGroupStatusId == statusId))
-                            .Where(eg => (userId == null || eg.UserId == userId))
+                return Ok(expenseGroups                     // already sorted and filtered
+                            .Skip(pageSize * (page - 1))    // skip the pages we don't need
+                            .Take(pageSize)                 // take the number of items a page contains
                             .ToList()
                             .Select(eg => _expenseGroupFactory.CreateExpenseGroup(eg)));
+
             }
             catch (Exception)
             {
