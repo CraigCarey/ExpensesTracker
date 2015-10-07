@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using System.Web.Http;
 using Marvin.JsonPatch;
+using System.Net;
+using ExpenseTracker.API.Helpers;
 
 namespace ExpenseTracker.API.Controllers
 {
@@ -24,15 +26,38 @@ namespace ExpenseTracker.API.Controllers
             _repository = repository;
         }    
 
-        // retrieve a list of resources
-        public IHttpActionResult Get()
+        // retrieve a sorted list of resources
+        // parameters passed as query strings
+        public IHttpActionResult Get(string sort = "id", string status = null, string userId = null)
         {
             try
             {
+                int statusId = -1;
+                if (status != null)
+                {
+                    switch (status.ToLower())
+                    {
+                        case "open": statusId = 1;
+                            break;
+                        case "confirmed": statusId = 2;
+                            break;
+                        case "processed": statusId = 3;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
                 var expenseGroups = _repository.GetExpenseGroups();
 
                 // return statuscode 200 containing the list of ExpenseGroups, mapped using the factory to their DTO models
-                return Ok(expenseGroups.ToList().Select(eg => _expenseGroupFactory.CreateExpenseGroup(eg)));
+                return Ok(expenseGroups
+                            .ApplySort(sort)
+                            // only return ExpenseGroups that conform to the statuscode & userId passed in
+                            .Where(eg => (statusId == -1 || eg.ExpenseGroupStatusId == statusId))
+                            .Where(eg => (userId == null || eg.UserId == userId))
+                            .ToList()
+                            .Select(eg => _expenseGroupFactory.CreateExpenseGroup(eg)));
             }
             catch (Exception)
             {
@@ -162,6 +187,29 @@ namespace ExpenseTracker.API.Controllers
                     // map to DTO
                     var patchedExpenseGroup = _expenseGroupFactory.CreateExpenseGroup(result.Entity);
                     return Ok(patchedExpenseGroup);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
+
+        public IHttpActionResult Delete(int id)
+        {
+            try
+            {
+                var result = _repository.DeleteExpenseGroup(id);
+
+                if (result.Status == RepositoryActionStatus.Deleted)
+                {
+                    return StatusCode(HttpStatusCode.NoContent);
+                }
+                else if (result.Status == RepositoryActionStatus.NotFound)
+                {
+                    return NotFound();
                 }
 
                 return BadRequest();

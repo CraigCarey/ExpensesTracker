@@ -13,7 +13,6 @@ namespace ExpenseTracker.API.Controllers
     [RoutePrefix("api")]
     public class ExpensesController : ApiController
     {
-
         IExpenseTrackerRepository _repository;
         ExpenseFactory _expenseFactory = new ExpenseFactory();
 
@@ -26,9 +25,71 @@ namespace ExpenseTracker.API.Controllers
         {
             _repository = repository;
         }
-         
 
-     
+        // api/expensegroups/1/expenses
+        [Route("expensegroups/{expenseGroupId}/expenses")]
+        public IHttpActionResult Get(int expenseGroupId)
+        {
+            try
+            {
+                var expenses = _repository.GetExpenses(expenseGroupId);
+
+                if (expenses == null)
+                {
+                    // 404 - expenseGroup doesn't exist
+                    return NotFound();
+                }
+
+                var expensesResult = expenses.ToList().Select(exp => _expenseFactory.CreateExpense(exp));
+
+                return Ok(expensesResult);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
+
+        // gets a specific expense, maps to 2 separate URIs
+        [Route("expensegroups/{expenseGroupId}/expenses/{id}")]
+        [Route("expenses/{id}")]
+        public IHttpActionResult Get(int id, int? expenseGroupId = null)
+        {
+            try
+            {
+                Repository.Entities.Expense expense = null;
+
+                // if expenseGroup wasn't passed in, just get expense
+                if (expenseGroupId == null)
+                {
+                    expense = _repository.GetExpense(id);
+                }
+                else
+                {
+                    // if expenseGroup was passed in, only return an expense if the group and id are valid
+                    var expensesForGroup = _repository.GetExpenses((int)expenseGroupId);
+
+                    if (expensesForGroup != null)
+                    {
+                        expense = expensesForGroup.FirstOrDefault(eg => eg.Id == id);
+                    }
+                }
+                                
+                if (expense != null)
+                {
+                    var returnValue = _expenseFactory.CreateExpense(expense);
+                    return Ok(returnValue);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
 
         [Route("expenses/{id}")]
         public IHttpActionResult Delete(int id)
@@ -84,8 +145,7 @@ namespace ExpenseTracker.API.Controllers
                 return InternalServerError();
             }
         }
-
-
+        
         [Route("expenses/{id}")]
         public IHttpActionResult Put(int id, [FromBody]DTO.Expense expense)
         {
@@ -118,8 +178,7 @@ namespace ExpenseTracker.API.Controllers
                 return InternalServerError();
             }
         }
-
-
+        
         [Route("expenses/{id}")]
         [HttpPatch]
         public IHttpActionResult Patch(int id, [FromBody]JsonPatchDocument<DTO.Expense> expensePatchDocument)
@@ -138,7 +197,7 @@ namespace ExpenseTracker.API.Controllers
                     return NotFound();
                 }
 
-                //// map
+                // map
                 var exp = _expenseFactory.CreateExpense(expense);
 
                 // apply changes to the DTO
@@ -160,9 +219,6 @@ namespace ExpenseTracker.API.Controllers
             {
                 return InternalServerError();
             }
-        }
-
-
-         
+        }         
     }
 }
