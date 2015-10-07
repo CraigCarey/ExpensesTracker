@@ -92,7 +92,6 @@ namespace ExpenseTracker.Repository
             return _ctx.ExpenseGroups.Include("Expenses");
         }
 
-
         public IQueryable<ExpenseGroup> GetExpenseGroups(string userId)
         {
             return _ctx.ExpenseGroups.Where(eg => eg.UserId == userId);
