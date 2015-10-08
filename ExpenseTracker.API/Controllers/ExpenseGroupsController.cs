@@ -169,6 +169,7 @@ namespace ExpenseTracker.API.Controllers
 
 
         // Create a resource using POST, parses ExpenseGroup from request body
+        [Route("api/expensegroups")]
         [HttpPost]
         public IHttpActionResult Post([FromBody] DTO.ExpenseGroup expenseGroup)
         {
