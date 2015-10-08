@@ -1,5 +1,4 @@
 C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.DTO\bin\Debug\ExpenseTracker.DTO.dll
 C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.DTO\bin\Debug\ExpenseTracker.DTO.pdb
-C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.DTO\obj\Debug\ExpenseTracker.DTO.csprojResolveAssemblyReference.cache
 C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.DTO\obj\Debug\ExpenseTracker.DTO.dll
 C:\Google Drive\Training\DotNet\Pluralsight ASP.NET RESTful API\DemoCode\ExpenseTracker.DTO\obj\Debug\ExpenseTracker.DTO.pdb
