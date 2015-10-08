@@ -9,10 +9,13 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Routing;
 
 namespace ExpenseTracker.API.Controllers
 {
+    // enable anyone to access all http methods using any header
+    [EnableCors("*", "*", "GET, POST")]
     public class ExpenseGroupsController : ApiController
     {
         // When a class implements an interface, it can be used through a reference to that interface
