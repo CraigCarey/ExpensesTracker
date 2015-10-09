@@ -150,9 +150,27 @@ namespace ExpenseTracker.WebClient.Controllers
          
 
         // POST: ExpenseGroups/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            try
+            {
+                var client = ExpenseTrackerHttpClient.GetClient();
+                
+                var response = await client.DeleteAsync("api/expensegroups/" + id);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return Content("An error occurred");
+                }
+            }
+            catch
+            {
+                return Content("An error occurred.");
+            }
         }
     }
 }
