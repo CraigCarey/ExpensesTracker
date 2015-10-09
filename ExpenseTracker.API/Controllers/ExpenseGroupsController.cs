@@ -167,11 +167,9 @@ namespace ExpenseTracker.API.Controllers
             }
         }
 
-
-        // Create a resource using POST, parses ExpenseGroup from request body
         [Route("api/expensegroups")]
         [HttpPost]
-        public IHttpActionResult Post([FromBody] DTO.ExpenseGroup expenseGroup)
+        public IHttpActionResult Post([FromBody]DTO.ExpenseGroup expenseGroup)
         {
             try
             {
@@ -188,12 +186,14 @@ namespace ExpenseTracker.API.Controllers
 
                 if (result.Status == RepositoryActionStatus.Created)
                 {
+                    // map to dto
                     var newExpenseGroup = _expenseGroupFactory.CreateExpenseGroup(result.Entity);
-
-                    return Created(Request.RequestUri + "/" + newExpenseGroup.Id.ToString(), newExpenseGroup);
+                    return Created<DTO.ExpenseGroup>(Request.RequestUri
+                        + "/" + newExpenseGroup.Id.ToString(), newExpenseGroup);
                 }
 
                 return BadRequest();
+
             }
             catch (Exception)
             {
