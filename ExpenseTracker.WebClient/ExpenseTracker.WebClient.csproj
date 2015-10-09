@@ -43,6 +43,10 @@
     <Reference Include="JQueryUIHelpers">
       <HintPath>..\packages\jQueryUIHelpers.Mvc5.2.2.0\lib\net45\JQueryUIHelpers.dll</HintPath>
     </Reference>
+    <Reference Include="Marvin.JsonPatch, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Marvin.JsonPatch.0.9.0\lib\portable-net40+win+wpa81\Marvin.JsonPatch.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -154,6 +158,7 @@
     </Compile>
     <Compile Include="Helpers\ExpenseTrackerHttpClient.cs" />
     <Compile Include="Helpers\HeaderParser.cs" />
+    <Compile Include="Helpers\HttpClientExtensions.cs" />
     <Compile Include="Helpers\PagingInfo.cs" />
     <Compile Include="Models\ExpenseGroupsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

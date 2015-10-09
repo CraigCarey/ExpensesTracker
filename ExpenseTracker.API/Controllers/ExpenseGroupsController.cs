@@ -160,7 +160,6 @@ namespace ExpenseTracker.API.Controllers
                     includeExpenses = lstOfFields.Any(f => f.Contains("expenses"));
                 }
 
-
                 Repository.Entities.ExpenseGroup expenseGroup;
                 if (includeExpenses)
                 {
@@ -169,9 +168,7 @@ namespace ExpenseTracker.API.Controllers
                 else
                 {
                     expenseGroup = _repository.GetExpenseGroup(id);
-
                 }
-
 
                 if (expenseGroup != null)
                 {
