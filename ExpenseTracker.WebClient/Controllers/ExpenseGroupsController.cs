@@ -90,29 +90,62 @@ namespace ExpenseTracker.WebClient.Controllers
                 }
                 else
                 {
-                    return Content("A Create2 error occurred.");
+                    return Content("An error occurred.");
                 }
             }
             catch
             {
-                return Content("A Create1 error occurred.");
+                return Content("An error occurred.");
             }
 
         }
 
         // GET: ExpenseGroups/Edit/5
- 
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var client = ExpenseTrackerHttpClient.GetClient();
+
+            HttpResponseMessage response = await client.GetAsync("api/expensegroups/" + id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var model = JsonConvert.DeserializeObject<ExpenseGroup>(content);
+                return View(model);
+            }
+            
+            return Content("An error occurred.");
         }
 
         // POST: ExpenseGroups/Edit/5   
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, ExpenseGroup expenseGroup)
+        public async Task<ActionResult> Edit(int id, ExpenseGroup expenseGroup)
         {
-            return View();
+            try
+            {
+                var client = ExpenseTrackerHttpClient.GetClient();
+
+                // serialize and PUT
+                var serializedItemToUpdate = JsonConvert.SerializeObject(expenseGroup);
+
+                var response = await client.PutAsync("api/expensegroups/" + id,
+                    new StringContent(serializedItemToUpdate,
+                        System.Text.Encoding.Unicode, "application/json"));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return Content("An error occurred");
+                }
+            }
+            catch
+            {
+                return Content("An error occurred.");
+            }
         }
          
 
