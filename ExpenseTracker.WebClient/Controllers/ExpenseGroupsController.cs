@@ -2,6 +2,7 @@
 using ExpenseTracker.WebClient.Helpers;
 using ExpenseTracker.WebClient.Models;
 using Newtonsoft.Json;
+using PagedList;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace ExpenseTracker.WebClient.Controllers
 {
     public class ExpenseGroupsController : Controller
     {
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? page = 1)
         {
             var client = ExpenseTrackerHttpClient.GetClient();
 
@@ -32,15 +33,21 @@ namespace ExpenseTracker.WebClient.Controllers
                 return Content("An error occurred.");
             }
 
-            HttpResponseMessage response = await client.GetAsync("api/expensegroups");
+            HttpResponseMessage response = await client.GetAsync("api/expensegroups?sort=expensegroupstatusid,title&page=" + page + "&pagesize=5");
 
             if (response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
 
+                var pagingInfo = HeaderParser.FindAndParsePagingInfo(response.Headers);
+
                 var lstExpenseGroups = JsonConvert.DeserializeObject<IEnumerable<ExpenseGroup>>(content);
 
-                model.ExpenseGroups = lstExpenseGroups;
+                var pagedExpenseGroupsList = new StaticPagedList<ExpenseGroup>(lstExpenseGroups,
+                    pagingInfo.CurrentPage, pagingInfo.PageSize, pagingInfo.TotalCount);
+
+                model.ExpenseGroups = pagedExpenseGroupsList;
+                model.PagingInfo = pagingInfo;
              
             }
             else
