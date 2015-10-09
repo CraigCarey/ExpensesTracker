@@ -2,21 +2,15 @@
 using ExpenseTracker.WebClient.Helpers;
 using ExpenseTracker.WebClient.Models;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ExpenseTracker.WebClient.Controllers
 {
     public class ExpenseGroupsController : Controller
     {
-
         public async Task<ActionResult> Index()
         {
             var client = ExpenseTrackerHttpClient.GetClient();
@@ -65,7 +59,6 @@ namespace ExpenseTracker.WebClient.Controllers
         }
 
         // GET: ExpenseGroups/Create
- 
         public ActionResult Create()
         {
             return View();
@@ -74,9 +67,37 @@ namespace ExpenseTracker.WebClient.Controllers
         // POST: ExpenseGroups/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ExpenseGroup expenseGroup)
+        public async Task<ActionResult> Create(ExpenseGroup expenseGroup)
         {
-            return View();
+            try
+            {
+                var client = ExpenseTrackerHttpClient.GetClient();
+
+                // an expensegroup is created with status "Open", for the current user
+                expenseGroup.ExpenseGroupStatusId = 1;
+                expenseGroup.UserId = @"https://expensetrackeridsrv3/embedded_1";
+
+                var serializedItemToCreate = JsonConvert.SerializeObject(expenseGroup);
+
+                var response = await client.PostAsync("api/expensegroups",
+                    new StringContent(serializedItemToCreate,
+                        System.Text.Encoding.Unicode,
+                        "application/json"));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return Content("A Create2 error occurred.");
+                }
+            }
+            catch
+            {
+                return Content("A Create1 error occurred.");
+            }
+
         }
 
         // GET: ExpenseGroups/Edit/5
