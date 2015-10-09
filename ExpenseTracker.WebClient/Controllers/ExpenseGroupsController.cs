@@ -58,11 +58,22 @@ namespace ExpenseTracker.WebClient.Controllers
             return View(model);
         }
 
- 
+
         // GET: ExpenseGroups/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return Content("Not implemented yet.");
+            var client = ExpenseTrackerHttpClient.GetClient();
+
+            HttpResponseMessage response = await client.GetAsync("api/expensegroups/" + id + "?fields=id,description,title,expenses");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var model = JsonConvert.DeserializeObject<ExpenseGroup>(content);
+                return View(model);
+            }
+
+            return Content("An error occurred");
         }
 
         // GET: ExpenseGroups/Create

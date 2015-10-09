@@ -146,19 +146,40 @@ namespace ExpenseTracker.API.Controllers
         }
 
         // retrieve a single resource, rather than a list
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult Get(int id, string fields = null)
         {
             try
             {
-                var expenseGroup = _repository.GetExpenseGroup(id);
-                
-                if (expenseGroup == null)
+                bool includeExpenses = false;
+                List<string> lstOfFields = new List<string>();
+
+                // we should include expenses when the fields-string contains "expenses"
+                if (fields != null)
                 {
-                    return NotFound();
+                    lstOfFields = fields.ToLower().Split(',').ToList();
+                    includeExpenses = lstOfFields.Any(f => f.Contains("expenses"));
+                }
+
+
+                Repository.Entities.ExpenseGroup expenseGroup;
+                if (includeExpenses)
+                {
+                    expenseGroup = _repository.GetExpenseGroupWithExpenses(id);
                 }
                 else
                 {
-                    return Ok(_expenseGroupFactory.CreateExpenseGroup(expenseGroup));
+                    expenseGroup = _repository.GetExpenseGroup(id);
+
+                }
+
+
+                if (expenseGroup != null)
+                {
+                    return Ok(_expenseGroupFactory.CreateDataShapedObject(expenseGroup, lstOfFields));
+                }
+                else
+                {
+                    return NotFound();
                 }
             }
             catch (Exception)
