@@ -1,5 +1,6 @@
 ﻿using ExpenseTracker.DTO;
 using ExpenseTracker.WebClient.Helpers;
+using ExpenseTracker.WebClient.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ExpenseTracker.WebClient.Models;
 
 namespace ExpenseTracker.WebClient.Controllers
 {
@@ -24,16 +24,18 @@ namespace ExpenseTracker.WebClient.Controllers
             var model = new ExpenseGroupsViewModel();
 
             var egsResponse = await client.GetAsync("api/expensegroupstatusses");
-            
+
             if (egsResponse.IsSuccessStatusCode)
             {
                 string egsContent = await egsResponse.Content.ReadAsStringAsync();
+
                 var lstExpenseGroupStatusses = JsonConvert.DeserializeObject<IEnumerable<ExpenseGroupStatus>>(egsContent);
+
                 model.ExpenseGroupStatusses = lstExpenseGroupStatusses;
             }
             else
             {
-                return Content("An error occurred");
+                return Content("An error occurred.");
             }
 
             HttpResponseMessage response = await client.GetAsync("api/expensegroups");
@@ -41,8 +43,11 @@ namespace ExpenseTracker.WebClient.Controllers
             if (response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
+
                 var lstExpenseGroups = JsonConvert.DeserializeObject<IEnumerable<ExpenseGroup>>(content);
+
                 model.ExpenseGroups = lstExpenseGroups;
+             
             }
             else
             {
@@ -69,37 +74,9 @@ namespace ExpenseTracker.WebClient.Controllers
         // POST: ExpenseGroups/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(ExpenseGroup expenseGroup)
+        public ActionResult Create(ExpenseGroup expenseGroup)
         {
-            try
-            {
-                var client = ExpenseTrackerHttpClient.GetClient();
-
-                // an ExpenseGroup is created with status "open", for the current user
-                expenseGroup.ExpenseGroupStatusId = 1;
-                expenseGroup.UserId = @"https://expensetrackeridsrv3/embedded_1";
-
-                var serializedItemToCreate = JsonConvert.SerializeObject(expenseGroup);
-
-                var response = await client.PostAsync("api/expensegroups",
-                        new StringContent(serializedItemToCreate,
-                            System.Text.Encoding.Unicode,
-                            "application/json"));
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return Content("An error occurred");
-                }
-            }
-            catch (Exception)
-            {
-                return Content("An error occurred");
-            }
-
+            return View();
         }
 
         // GET: ExpenseGroups/Edit/5
