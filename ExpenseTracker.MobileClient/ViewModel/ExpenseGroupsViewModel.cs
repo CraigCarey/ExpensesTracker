@@ -46,8 +46,9 @@ namespace ExpenseTracker.MobileClient.ViewModel
              // load open expense groups
             var client = ExpenseTrackerHttpClient.GetClient();
 
-            HttpResponseMessage response = await client
-                .GetAsync("api/expensegroups?fields=id,title,description");
+            // don't need to get status as we're not displaying it
+            // filters out expensegroups that aren't open
+            HttpResponseMessage response = await client.GetAsync("api/expensegroups?fields=id,title,description&status=open");
             string content = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
