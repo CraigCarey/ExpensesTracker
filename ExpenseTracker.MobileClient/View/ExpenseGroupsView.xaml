@@ -1,0 +1,106 @@
+﻿<Page x:Class="ExpenseTracker.MobileClient.View.ExpenseGroupsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:ExpenseTracker.MobileClient.View"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      DataContext="{Binding Source={StaticResource Locator},
+                            Path=ExpenseGroups}"
+      mc:Ignorable="d">
+    <Page.Resources>
+
+        <SolidColorBrush x:Key="brshPSOrange" Color="Orange" />
+
+        <Style x:Key="TitleTextBlockStyle"
+               BasedOn="{StaticResource BaseTextBlockStyle}"
+               TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{StaticResource TextStyleLargeFontSize}" />
+            <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilyNormal}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="Foreground" Value="{StaticResource brshPSOrange}" />
+        </Style>
+
+        <Style x:Key="HeaderTextBlockStyle"
+               BasedOn="{StaticResource BaseTextBlockStyle}"
+               TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilySemiLight}" />
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+
+        </Style>
+
+        <Style x:Key="NormalTextBlockStyle"
+               BasedOn="{StaticResource BaseTextBlockStyle}"
+               TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilySemiLight}" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+
+        </Style>
+
+    </Page.Resources>
+
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition />
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Title Panel  -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Margin="0,12,0,0"
+                       Style="{ThemeResource TitleTextBlockStyle}"
+                       Text="EXPENSE TRACKER" />
+            <TextBlock Margin="0,-6.5,0,26.5"
+                       CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"
+                       Style="{ThemeResource HeaderTextBlockStyle}"
+                       Text="expense groups" />
+        </StackPanel>
+
+
+        <Grid x:Name="ContentRoot"
+              Grid.Row="1"
+              Margin="19,9.5,19,0">
+
+            <ListView IsItemClickEnabled="True"
+                      IsSwipeEnabled="false"
+                      ItemClick="ListView_ItemClick"
+                      ItemsSource="{Binding ExpenseGroups}"
+                      SelectionMode="None">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="0,0,0,8" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+
+                            <StackPanel VerticalAlignment="Top">
+                                <TextBlock Style="{StaticResource HeaderTextBlockStyle}" Text="{Binding Title}" />
+                                <TextBlock Foreground="{ThemeResource PhoneMidBrush}"
+                                           Style="{StaticResource NormalTextBlockStyle}"
+                                           Text="{Binding Description}"
+                                           TextWrapping="Wrap" />
+
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </Grid>
+
+    </Grid>
+</Page>

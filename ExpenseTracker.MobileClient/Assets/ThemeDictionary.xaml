@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="using:ExpenseTracker.MobileClient.Assets">
+
+    <SolidColorBrush x:Key="brshPSOrange" Color="Orange" />
+
+    <Style x:Key="TitleTextBlockStyle"
+           BasedOn="{StaticResource BaseTextBlockStyle}"
+           TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource TextStyleLargeFontSize}" />
+        <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilyNormal}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="{StaticResource brshPSOrange}" />
+    </Style>
+
+    <Style x:Key="HeaderTextBlockStyle"
+           BasedOn="{StaticResource BaseTextBlockStyle}"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilySemiLight}" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+
+    </Style>
+
+    <Style x:Key="NormalTextBlockStyle"
+           BasedOn="{StaticResource BaseTextBlockStyle}"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilySemiLight}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+
+    </Style>
+
+
+    <Style x:Key="SmallTextBlockStyle"
+           BasedOn="{StaticResource BaseTextBlockStyle}"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilySemiLight}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+
+    </Style>
+
+</ResourceDictionary>
